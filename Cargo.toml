@@ -1,0 +1,10 @@
+[package]
+name = "ds_prep_gen"
+version = "0.1.0"
+authors = ["Nattapong Sirilappanich <s.nattapong@gmail.com>"]
+
+[dependencies]
+rand = "*"
+serde = "*"
+serde_derive = "*"
+serde_json = "*"

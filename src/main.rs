@@ -12,6 +12,9 @@ use std::ops::Add;
 #[derive(Clone, Copy, Serialize)]
 struct Point (u32, u32, u32);
 
+#[derive(Clone, Copy, Serialize)]
+struct FPoint (f64, f64, f64);
+
 impl Add for Point {
     type Output = Point;
 
@@ -37,20 +40,24 @@ impl RandomPoint {
 fn main() -> Result<(), Box<std::error::Error>> {
     let f = File::create("data.txt")?;
     let mut writer = BufWriter::with_capacity(32 * 2usize.pow(20), f); // 32MB buffer
-    let origin = Point(0, 0, 0); // starting point for every point
+    let origin = FPoint(0f64, 0f64, 0f64); // starting point for every point
     let n = 10; // number of point in each record
     let mut points = vec![origin; 10];
     let len = 10usize.pow(5); // need 100,000 records
-    let mut rdm = RandomPoint::new();
+    // let mut rdm = RandomPoint::new();
 
     // total size is 10^6 * (10 * 32^3) = 31,250MB
-    (0..len).for_each(|_| {
+    (0..len).for_each(|r| {
         // each record
         (0..n).for_each(|i| {
             // each point
 
             // randomly move point
-            points[i] = points[i] + rdm.next();
+            // points[i] = points[i] + rdm.next();
+
+            // calculate sin wave
+            let coor = f64::sin((r + i) as f64 / std::f64::consts::PI);
+            points[i] = FPoint(coor, coor, coor)
         });
         let p_str : &str = &serde_json::to_string(&points).unwrap();
         writer.write(p_str.as_bytes()).unwrap();
